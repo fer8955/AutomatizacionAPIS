@@ -102,6 +102,5 @@ public class StoreStepsDef {
     public void vuelvoAValidarElCálculoDePreciosEnElCarrito() {
          StoreSteps validateMountCarritoSteps = new StoreSteps(driver);
          validateMountCarritoSteps.validateMountCarrito();
-         screenShot();
     }
 }
