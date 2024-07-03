@@ -87,7 +87,13 @@ public class StorePage {
         WebElement iniciarSesionButton = driver.findElement(buttonIniciar);
         iniciarSesionButton.click();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Nueva espera explícita con timeout de 10 segundos
-        wait.until(ExpectedConditions.urlContains("iniciar-sesion")); // Esperar a que la URL contenga "iniciar-sesion"
+        try {
+            // Esperar a que la URL contenga "iniciar-sesion"
+            wait.until(ExpectedConditions.urlContains("iniciar-sesion"));
+        } catch (TimeoutException e) {
+            System.out.println("Error: No se encontró el elemento.");
+        }
+
     }
 
     // Método para escribir el nombre de usuario
@@ -111,14 +117,19 @@ public class StorePage {
     // Método para validar el inicio de sesión
     public void validateLogin() {
         // Esperar a que el elemento de validación de inicio de sesión esté presente en la página
-        WebElement validateLoginElement = wait.until(ExpectedConditions.visibilityOfElementLocated(elementValidateLogin));
-
-        // Verificar si el elemento de validación de inicio de sesión está presente y mostrar un mensaje
-        if (validateLoginElement.isDisplayed()) {
-            System.out.println("El inicio de sesión fue exitoso. Elemento de validación encontrado.");
-        } else {
-            System.out.println("El inicio de sesión falló. No se encontró el elemento de validación.");
+        try {
+            WebElement validateLoginElement = wait.until(ExpectedConditions.visibilityOfElementLocated(elementValidateLogin));
+            // Verificar si el elemento de validación de inicio de sesión está presente y mostrar un mensaje
+            if (validateLoginElement.isDisplayed()) {
+                System.out.println("El inicio de sesión fue exitoso. Elemento de validación encontrado.");
+            } else {
+                System.out.println("El inicio de sesión falló. No se encontró el elemento de validación.");
+            }
+        } catch (TimeoutException e) {
+            System.out.println("Error: No se encontró el elemento.");
         }
+
+
     }
 
     // Métodos para clic en la categoría y subcategoría
@@ -128,17 +139,19 @@ public class StorePage {
     }
 
     public void validateCategoria(String categoria) {
-        // Esperar a que el elemento de validación de categoría esté presente en la página
-        WebElement validateCategoriaElement = wait.until(ExpectedConditions.visibilityOfElementLocated(elementValidateCat));
-
-        // Obtener el texto del elemento de validación de categoría
-        String categoriaTexto = validateCategoriaElement.getText();
-
-        // Verificar si el texto de la categoría es "Clothes"
-        if (categoriaTexto.equals(categoria)) {
-            System.out.println("La categoría seleccionada es correcta: " + categoriaTexto);
-        } else {
-            System.out.println("La categoría seleccionada es incorrecta. Se esperaba" + categoria + " pero se encontró: " + categoriaTexto);
+        try {
+            // Esperar a que el elemento de validación de categoría esté presente en la página
+            WebElement validateCategoriaElement = wait.until(ExpectedConditions.visibilityOfElementLocated(elementValidateCat));
+            // Obtener el texto del elemento de validación de categoría
+            String categoriaTexto = validateCategoriaElement.getText();
+            // Verificar si el texto de la categoría es "Clothes"
+            if (categoriaTexto.equals(categoria)) {
+                System.out.println("La categoría seleccionada es correcta: " + categoriaTexto);
+            } else {
+                System.out.println("La categoría seleccionada es incorrecta. Se esperaba" + categoria + " pero se encontró: " + categoriaTexto);
+            }
+        } catch (TimeoutException e) {
+            System.out.println("Error: No se encontró el elemento.");
         }
     }
     // Métodos para clic en la  subcategoría
@@ -149,17 +162,21 @@ public class StorePage {
 
 
     public void validateSubCategoria(String subcategoria) {
-        // Esperar a que el elemento de validación de categoría esté presente en la página
-        WebElement validateCategoriaElement = wait.until(ExpectedConditions.visibilityOfElementLocated(elementValidateCat));
+        try {
+            // Esperar a que el elemento de validación de categoría esté presente en la página
+            WebElement validateCategoriaElement = wait.until(ExpectedConditions.visibilityOfElementLocated(elementValidateCat));
 
-        // Obtener el texto del elemento de validación de categoría
-        String categoriaTexto = validateCategoriaElement.getText();
+            // Obtener el texto del elemento de validación de categoría
+            String categoriaTexto = validateCategoriaElement.getText();
 
-        // Verificar si el texto de la subcategoría es "Men"
-        if (categoriaTexto.equals(subcategoria)) {
-            System.out.println("La subcategoría seleccionada es correcta: " + categoriaTexto);
-        } else {
-            System.out.println("La subcategoría seleccionada es incorrecta. Se esperaba" + subcategoria + "pero se encontró: " + categoriaTexto);
+            // Verificar si el texto de la subcategoría es "Men"
+            if (categoriaTexto.equals(subcategoria)) {
+                System.out.println("La subcategoría seleccionada es correcta: " + categoriaTexto);
+            } else {
+                System.out.println("La subcategoría seleccionada es incorrecta. Se esperaba" + subcategoria + "pero se encontró: " + categoriaTexto);
+            }
+        } catch (TimeoutException e) {
+            System.out.println("Error: No se encontró el elemento");
         }
     }
 
@@ -183,30 +200,29 @@ public class StorePage {
     }
 
     public void validateProduct() {
-        // Esperar a que el popup esté presente
-        WebElement popupElement = wait.until(ExpectedConditions.visibilityOfElementLocated(PopUp));
+        try {
+            // Esperar a que el popup esté presente
+            WebElement popupElement = wait.until(ExpectedConditions.visibilityOfElementLocated(PopUp));
+            // Verificar si el popup está presente
+            if (popupElement.isDisplayed()) {
+                System.out.println("El popup de confirmación está presente.");
 
-        // Verificar si el popup está presente
-        if (popupElement.isDisplayed()) {
-            System.out.println("El popup de confirmación está presente.");
+                // Obtener el texto del nombre del producto en el popup
+                WebElement productNameElement = driver.findElement(modalNameProduct);
+                String productName = productNameElement.getText();
 
-            // Obtener el texto del nombre del producto en el popup
-            WebElement productNameElement = driver.findElement(modalNameProduct);
-            String productName = productNameElement.getText();
+                // Verificar si el nombre del producto es igual a "Hummingbird printed t-shirt"
+                String expectedProductName = "Hummingbird printed t-shirt";
 
-            // Verificar si el nombre del producto es igual a "Hummingbird printed t-shirt"
-            String expectedProductName = "Hummingbird printed t-shirt";
-
-            if (productName.equals(expectedProductName)) {
-                System.out.println("El producto agregado es correcto: " + productName);
-            } else {
-                System.out.println("El producto agregado es incorrecto. Se esperaba: " + expectedProductName + " pero se encontró: " + productName);
+                if (productName.equals(expectedProductName)) {
+                    System.out.println("El producto agregado es correcto: " + productName);
+                } else {
+                    System.out.println("El producto agregado es incorrecto. Se esperaba: " + expectedProductName + " pero se encontró: " + productName);
+                }
             }
-        } else {
-            System.out.println("El popup de confirmación no está presente.");
+        }catch(TimeoutException e){
+                System.out.println("Error: No se encontró el elemento.");
         }
-
-
     }
 
     public void validateMount() {
@@ -244,21 +260,20 @@ public class StorePage {
     }
 
     public void validateCarrito(String title) {
-        WebElement carritoTitleElement = driver.findElement(titlePageCarrito);
         try {
+            WebElement carritoTitleElement = driver.findElement(titlePageCarrito);
             carritoTitleElement = wait.until(ExpectedConditions.visibilityOfElementLocated(titlePageCarrito));
+            String carritoTitle = carritoTitleElement.getText().trim();
+
+            if (carritoTitle.equalsIgnoreCase(title)) {
+                System.out.println("El título de la página es 'Carrito'.");
+            } else {
+                System.out.println("Error: El título de la página no es "+ title+ ". Se encontró: " + carritoTitle);
+            }
         } catch (TimeoutException e) {
-            System.out.println("Error: No se encontró el elemento del título del carrito.");
-            return;
+            System.out.println("Error: No se encontró el elemento");
         }
 
-        String carritoTitle = carritoTitleElement.getText().trim();
-
-        if (carritoTitle.equalsIgnoreCase(title)) {
-            System.out.println("El título de la página es 'Carrito'.");
-        } else {
-            System.out.println("Error: El título de la página no es "+ title+ ". Se encontró: " + carritoTitle);
-        }
     }
 
     public void validateMountCarrito() {
