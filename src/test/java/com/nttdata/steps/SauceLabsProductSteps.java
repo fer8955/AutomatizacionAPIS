@@ -12,7 +12,7 @@ public class SauceLabsProductSteps {
 
     @Step
     public void validateProductGalleryLoad() {
-        //Assert.assertTrue(productScreen.isProductGalleryLoaded());
+        Assert.assertTrue(productScreen.isProductGalleryLoaded());
     }
 
     @Step
